@@ -1,0 +1,29 @@
+{{!-- Can Input the Training Information Here --}} {{! error messages displayed based on form validation}} {{#if errors}}
+{{#each errors}}
+<div class="alert alert-danger">{{msg}}</div>
+{{/each}} {{/if}}
+<div class="subheader">Course Information</div>
+<form method="post" action="/training/AddTraining">
+  <table>
+    <tr>
+      <th>Course Name: </th>
+      <th>
+        <input type="text" class="form-control" name="courseName" placeholder="Course Name">
+      </th>
+    </tr>
+    <tr>
+      <th>Estimated Time to Complete (in minutes): </th>
+      <th>
+        <input type="number" class="form-control" name="estTime" placeholder="0">
+      </th>
+    </tr>
+    <tr>
+      <th>Course Description: </th>
+      <th>
+        <input type="text" class="form-control" name="description" placeholder="Description">
+      </th>
+    </tr>
+  </table>
+  <a class="btn btn-default" href="/training/ManageTrainings">Cancel</a>
+  <button class="btn btn-primary" type='submit'>Create Training</button>
+</form>

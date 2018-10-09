@@ -1,0 +1,17 @@
+{{! a table of all the trainings available}}
+<table class="table table-bordered" id="courseList">
+  <tr>
+    <th>Course Name</th>
+    <th>Estimated Completion Time</th>
+    <th></th>
+  </tr>
+  {{#each trainingCourses}}
+  <tr>
+    <td>{{this.courseName}}</td>
+    <td>{{this.estMinutes}} minutes</td>
+    <th>
+      <a class="btn btn-primary" href="/training/TakeTraining/{{this.id}}/page/1">Begin Training</a>
+    </th>
+  </tr>
+  {{/each}}
+</table>

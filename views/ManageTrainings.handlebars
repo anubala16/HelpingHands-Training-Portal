@@ -1,0 +1,73 @@
+</body>
+<a class="btn btn-primary" href="/training/AddTraining">Create New Training</a>
+<br>
+<br>
+<table class="table table-bordered" id="courseList">
+  <tr>
+    <th>Course Name</th>
+    <th>Description</th>
+    <th></th>
+    <th></th>
+  </tr>
+  {{#each trainingCourses}}
+  <tr>
+    <td>{{this.courseName}}</td>
+    <td>{{this.courseDesc}}</td>
+    <th>
+      <a class="btn btn-default" href="/training/EditTraining/{{this.id}}">Edit</a>
+    </th>
+    <th>
+      {{!-- Button trigger modal --}}
+      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteTraining{{this.id}}">
+        Delete
+      </button>
+    </th>
+  </tr>
+  {{!-- Modal with verifying that the user wishes to delete the training --}}
+  <div class="modal fade" id="deleteTraining{{this.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteTrainingLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteTrainingLabel">
+            <b>Delete Training</b>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure sure you want to delete the training?:
+          <b> {{this.courseName}}</b>
+        </div>
+        <div class="modal-footer">
+          {{! Keep and Delete buttons}}
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Keep</button>
+          <button class="btn btn-danger" onclick="deleteTrainingCourse({{this.id}})">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</table>
+<script type="text/javascript">
+
+  function deleteTrainingCourse(trainingId) {
+
+    var deleteForm = document.createElement("form");
+    deleteForm.setAttribute("method", "post");
+    deleteForm.setAttribute("action", "/training/DeleteTrainingCourse");
+
+    var tIdField = document.createElement("input");
+    tIdField.setAttribute("type", "hidden");
+    tIdField.setAttribute("name", "trainingId");
+    tIdField.setAttribute("value", trainingId);
+    deleteForm.appendChild(tIdField);
+
+    document.body.appendChild(deleteForm);
+    deleteForm.submit();
+
+    return;
+  }
+
+</script>

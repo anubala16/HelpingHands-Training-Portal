@@ -1,0 +1,25 @@
+<img src="/images/CollaborativeLogo.png" class="rightLogo" alt="Our Logo">
+<b>Hello and Welcome to the NC Collaborative for Children, Youth, and Family's Training Portal!</b>
+<p> Here you will be able to log on and take trainings crafted by the NC Collaborative. At this portal, you can access even more
+    resources and trainings not directly associated with the Collaborative. Follow the link at the bottom of the page to
+    visit the Collaborative's main website.</p>
+<br>
+<p>Please note this site is new and its development is still in progress. Not everything may be fully functional as of right
+    now, but we hope your visit is worthwhile until everything is implemented. Disabled buttons indicate unfinished logic
+    in the system.</p>
+<br> {{#if user}}
+<p>Would you like to
+    <b>edit/update any of your personal information</b>?</p>
+<a class="btn btn-primary" href="/users/MyProfile">Update Your Profile</a>
+{{/if}} {{#ifEQ user.userLevel 4}}
+<br>
+<br>
+<p>Would you like to
+    <b>add a new admin</b> to the team?</p>
+<a class="btn btn-primary" href="/users/NewAdmin">Create New Admin</a>
+<br>
+<br>
+<p>Would you like to
+    <b>view users</b>?</p>
+<a class="btn btn-primary" href="/users/ManageUsers">Manage Users</a>
+{{/ifEQ}}

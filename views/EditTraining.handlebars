@@ -1,0 +1,162 @@
+{{! Logic for hiding/showing content fields for different page types }}
+<script src="/js/EditTrainingLogic.js"></script>
+<div class="subheader">Course Information</div>
+<form method="post" action="/training/EditTraining/{{training.id}}">
+  {{! Can Edit the Training Information Here }}
+  <table>
+    <tr>
+      <th>Course Name: </th>
+      <th>
+        <input type="text" class="form-control" name="courseName" value="{{training.courseName}}">
+      </th>
+    </tr>
+    <tr>
+      <th>Estimated Time to Complete (in minutes): </th>
+      <th>
+        <input type="number" class="form-control" name="estTime" value="{{training.estMinutes}}">
+      </th>
+    </tr>
+    <tr>
+      <th>Course Description: </th>
+      <th>
+        <input type="text" class="form-control" name="description" value="{{training.courseDesc}}">
+      </th>
+    </tr>
+  </table>
+  <a class="btn btn-default" href="/training/ManageTrainings">Cancel</a>
+  <button class="btn btn-primary" type='submit'>Save</button>
+  <hr> {{! Add a new content page here - navigates to new page depending on the content type}}
+  <div class="subheader">Content Pages</div>
+  <i>Add new page of type: </i>
+  <select id="pageType" name="pageName">
+    <option value="quiz">Quiz</option>
+    <option value="timeline">Timeline</option>
+    {{!-- This option was not implemented on the bask end but fully exists on the front end Except for being displayed when taking
+    a training.
+    <option value="lesson">Lesson</option>
+    --}}
+  </select>
+  {{! Buttons update to display which page type is selected above}}
+  <a class="btn btn-primary pages" id="quiz" href="/training/AddQuizPage/{{training.id}}/add/{{pageNum}}">Add Page</a>
+  <a class="btn btn-primary pages" id="timeline" href="/training/AddTimelinePage/{{training.id}}/add/{{pageNum}}">Add Page</a>
+  <a class="btn btn-primary pages" id="lesson" href="/training/AddLessonPage/{{training.id}}/add/{{pageNum}}">Add Page</a>
+</form>
+<br>
+<br> {{! table of all the content pages included in the specific training}}
+<table class="table table-bordered" id="courseList">
+  <tr>
+    <th>Page</th>
+    <th>Page Type</th>
+    <th>Page Description</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  {{#each pages}}
+  <tr>
+    <td>{{this.pageNumber}}</td>
+    <td>{{this.pageType}}</td>
+    <td>{{this.pageDesc}}</td>
+    <th>
+      <button type="button" class="btn btn-default" onclick="swapPages({{this.trainingId}}, {{this.pageNumber}}, {{this.pageNumber}}-1)">Move Up</button>
+    </th>
+    <th>
+      <button type="button" class="btn btn-default" onclick="swapPages({{this.trainingId}}, {{this.pageNumber}}, {{this.pageNumber}}+1)">Move Down</button>
+    </th>
+    <th>
+      <a class="btn btn-primary" href="/training/Add{{this.pageType}}Page/{{this.trainingId}}/add/{{this.pageNumber}}">Edit</a>
+    </th>
+    <th>
+      {{!-- Button trigger modal --}}
+      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteTraining{{this.id}}">
+        Delete
+      </button>
+    </th>
+  </tr>
+  {{!-- Modal with verifying that the user wishes to delete the content page --}}
+  <div class="modal fade" id="deleteTraining{{this.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteTrainingLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteTrainingLabel">
+            <b>Delete Content Page</b>></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure sure you want to delete the content page?:
+          <b> {{this.pageDesc}}</b>
+        </div>
+        <div class="modal-footer">
+          {{! Keep and Delete buttons}}
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Keep</button>
+          <button type="button" class="btn btn-danger" onclick="deletePage({{this.trainingId}},{{this.pageNumber}})">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </th>
+  </tr>
+  {{/each}}
+</table>
+
+{{! logic for the delete/Move Up/Move Down buttons in the table}}
+<script type="text/javascript">
+
+  function deletePage(trainingId, pageNum) {
+
+    var deleteForm = document.createElement("form");
+    deleteForm.setAttribute("method", "post");
+    deleteForm.setAttribute("action", "/training/DeletePage");
+
+    var tIdField = document.createElement("input");
+    tIdField.setAttribute("type", "hidden");
+    tIdField.setAttribute("name", "trainingId");
+    tIdField.setAttribute("value", trainingId);
+    deleteForm.appendChild(tIdField);
+
+    var pNumField = document.createElement("input");
+    pNumField.setAttribute("type", "hidden");
+    pNumField.setAttribute("name", "pageNum");
+    pNumField.setAttribute("value", pageNum);
+    deleteForm.appendChild(pNumField);
+
+    document.body.appendChild(deleteForm);
+    deleteForm.submit();
+
+    return;
+  }
+
+  function swapPages(trainingId, pageNum1, pageNum2) {
+
+    var swapForm = document.createElement("form");
+    swapForm.setAttribute("method", "post");
+    swapForm.setAttribute("action", "/training/SwapPages");
+
+    var tIdField = document.createElement("input");
+    tIdField.setAttribute("type", "hidden");
+    tIdField.setAttribute("name", "trainingId");
+    tIdField.setAttribute("value", trainingId);
+    swapForm.appendChild(tIdField);
+
+    var pNum1Field = document.createElement("input");
+    pNum1Field.setAttribute("type", "hidden");
+    pNum1Field.setAttribute("name", "pageNum1");
+    pNum1Field.setAttribute("value", pageNum1);
+    swapForm.appendChild(pNum1Field);
+
+    var pNum2Field = document.createElement("input");
+    pNum2Field.setAttribute("type", "hidden");
+    pNum2Field.setAttribute("name", "pageNum2");
+    pNum2Field.setAttribute("value", pageNum2);
+    swapForm.appendChild(pNum2Field);
+
+    document.body.appendChild(swapForm);
+    swapForm.submit();
+
+    return;
+  }
+</script>

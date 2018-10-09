@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type='text/css'>
+  <link rel="stylesheet" href="/css/style.css" type='text/css'>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link title="timeline-styles" rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+  <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+</head>
+
+<body>
+  {{! Navbar }}
+  <div id="fixedheader">
+    <img src="/images/Logo2.png" alt="Our Logo" width="60" height="60">
+    <a href="/training/TrainingCourses">Leave Training</a>
+  </div>
+
+  {{! Name of the Training as the Header}}
+  <h1 class="pageheader">{{pageTitle}}</h1>
+  <div class="question">
+    {{! if the page is a quiz - iterates through all questions}} {{#ifEQ page.pageType "Quiz"}} {{#each questions}}
+    <b>{{this.questionText}}</b>
+    {{#ifEQ this.questionType "True/False"}}
+    <div id="trueFalse" class="question">
+      {{! displays true/false question}}
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="tfRadio{{this.number}}" value="A"> True
+      </label>
+      <br>
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="tfRadio{{this.number}}" value="B"> False
+      </label>
+    </div>
+    {{/ifEQ}} {{#ifEQ this.questionType "Multiple Choice"}}
+    <div id="multiple" class="question">
+      {{! displays multiple choice question}}
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="multRadio{{this.number}}" value="A"> {{this.choiceA}}
+      </label>
+      <br>
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="multRadio{{this.number}}" value="B"> {{this.choiceB}}
+      </label>
+      <br>
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="multRadio{{this.number}}" value="C"> {{this.choiceC}}
+      </label>
+      <br>
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" name="multRadio{{this.number}}" value="D"> {{this.choiceD}}
+      </label>
+    </div>
+    {{/ifEQ}} {{#ifEQ this.questionType "Rating Scale"}}
+    <table class="table ratingScale" cellspacing="1">
+      {{! displays rating scale question}}
+      <tr>
+        <th></th>
+        <th>1</th>
+        <th>2</th>
+        <th>3</th>
+        <th>4</th>
+        <th>5</th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>Strongly Disagree</th>
+        <th>
+          <input class="form-check-input" type="radio" name="ratingRadio{{this.number}}" value="1">
+        </th>
+        <th>
+          <input class="form-check-input" type="radio" name="ratingRadio{{this.number}}" value="2">
+        </th>
+        <th>
+          <input class="form-check-input" type="radio" name="ratingRadio{{this.number}}" value="3">
+        </th>
+        <th>
+          <input class="form-check-input" type="radio" name="ratingRadio{{this.number}}" value="4">
+        </th>
+        <th>
+          <input class="form-check-input" type="radio" name="ratingRadio{{this.number}}" value="5">
+        </th>
+        <th>Strongly Agree</th>
+      </tr>
+    </table>
+    {{/ifEQ}}
+    <br> {{/each}}
+  </div>
+  {{/ifEQ}} {{#ifEQ page.pageType "Lesson"}}
+  <div>A Lesson goes here!</div>
+  {{/ifEQ}} {{!if the page is a timeline, a this will create/display it from its JSON}} {{#ifEQ page.pageType "Timeline"}}
+  <div id='timeline-embed' style="width: 100%; height: 600px"></div>
+  <script>
+    window.timeline = new TL.Timeline('timeline-embed', {{{ pageJSON }}});
+  </script>
+  <br>
+  <br> {{/ifEQ}}
+
+  <div>
+    {{! front and back navigation to other pages in the training}} {{#if firstPage}}
+    <a href="" class="btn btn-primary disabled spacedButtons">Previous Page</a>
+    {{else}}
+    <a class="btn btn-primary spacedButtons" href="/training/TakeTraining/{{trainingId}}/page/{{prePage}}">Previous Page</a>
+    {{/if}} {{#if finalPage}} {{#ifEQ page.pageType "Quiz"}}
+    <a class="btn btn-primary spacedButtons" href="/training/TrainingResults/{{trainingId}}">Submit and Complete</a>
+    {{else}}
+    <a class="btn btn-primary spacedButtons" href="/training/TrainingResults/{{trainingId}}">Complete Training</a>
+    {{/ifEQ}} {{else}}{{#ifEQ page.pageType "Quiz"}}
+    <a class="btn btn-primary spacedButtons" href="/training/TakeTraining/{{trainingId}}/page/{{nextPage}}">Submit and Proceed</a>
+    {{else}}
+    <a class="btn btn-primary spacedButtons" href="/training/TakeTraining/{{trainingId}}/page/{{nextPage}}">Next Page</a>
+    {{/ifEQ}} {{/if}}
+    <br>
+    <br>
+  </div>
+</body>
+
+</html>

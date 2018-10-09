@@ -1,0 +1,400 @@
+{{! Logic for hiding/showing content fields for different page types }}
+<script src="/js/EditTrainingLogic.js"></script>
+
+<!-- If a Timeline Page is Chosen -->
+<form id="timelineForm" method="post" action="/training/AddTimelinePage">
+  <div id="timeline" class="group">
+    <input id="jsonTimeline" name="jsonTimeline" type="hidden" value="No Event">
+    <input id="timelineTitle" name="timelineTitle" type="hidden" value="No title">
+    <input type="hidden" value={{trainingId}} name="trainingId">
+    <input type="hidden" value={{pageId}} name="pageId">
+    <div class="form-group row" style="padding: 15px;">
+      <p> <h3> Timelines must have at least 1 Event! </h3> </p>
+      <label for="pageDesc">Page Description:</label>
+      <input class="form-control" type="text" name="pageDesc" value="{{page.pageDesc}}">
+    </div>
+    <hr>
+    <table class="table table-bordered" id="eventList">
+      <tr>
+        <label for="events">Events:</label>
+      </tr>
+      <tr>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Text</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+      {{#each page.contentJSON.events}}
+      <tr>
+        <td>{{this.start_date.year}}/{{this.start_date.month}}/{{this.start_date.day}}</td>
+        <td>{{this.end_date.year}}/{{this.end_date.month}}/{{this.end_date.day}}</td>
+        <td>{{this.text.text}}</td>
+        <td>
+          <button type="button" class="btn btn-primary">Edit</button>
+        </td>
+        <td>
+          <button type="button" class="btn btn-danger">Delete</button>
+        </td>
+      </tr>
+      {{/each}}
+    </table>
+    <hr>
+    <p>The only necessary field for an event is a start date (unless it is the Title Page): </p>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" id="titleCheck"> Title Page of Timeline
+      </label>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" id="textCheck"> Add Text
+      </label>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" id="mediaCheck"> Add Media
+      </label>
+    </div>
+
+    <div class="timelineObj" id="dateObj">
+      <div class="subheader">Date Objects</div>
+      <p>Note: The only required field for Dates is the year.</p>
+      <div class="form-group row">
+        <div class="startDate">
+          <label>Start Date (MM-DD-YYYY): </label>
+          <input style="width: 45px" name="startMonth" type="number" min="1" max="12">
+          <input style="width: 45px" name="startDay" type="number" min="1" max="31">
+          <input style="width: 70px" name="startYear" type="number" min="0" max="3000">
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="EndDate">
+          <label>End Date (MM-DD-YYYY): </label>
+          <input style="width: 45px" name="endMonth" type="number" min="1" max="12">
+          <input style="width: 45px" name="endDay" type="number" min="1" max="31">
+          <input style="width: 70px" name="endYear" type="number" min="0" max="3000">
+        </div>
+      </div>
+    </div>
+
+    <div class="timelineObj" id="textObj">
+      <div class="subheader">Text Objects</div>
+      <div class="form-group row">
+        <label for="headline">Headline:</label>
+        <input class="form-control" type="text" name="headline">
+      </div>
+      <div class="form-group row">
+        <label for="timelineText">Text Content:</label>
+        <input class="form-control" type="text" name="timelineText">
+      </div>
+    </div>
+
+    {{! Optional Media Object fields}}
+    <div class="timelineObj" id="mediaObj">
+      <div class="subheader">Media Object</div>
+      <p>Note: the only required field for a Media object is the Media itself.</p>
+      <div class="form-group">
+        <div class="form-check" id="mediaRadio">
+          <label>Media: </label>
+          <label class="form-check-label">
+            <input class="form-check-input" type="radio" name="mediaLink" value="mediaOnline" checked> Online URL
+          </label>
+          <label class="form-check-label">
+            <input class="form-check-input" type="radio" name="mediaLink" value="mediaLocal"> Local File
+          </label>
+          <div>
+            <input class="form-control mediaLink" type="text" name="mediaOnline" id="mediaOnline" style="width: 300px;">
+          </div>
+          <div>
+            <label class="custom-file mediaLink" id="mediaLocal">
+
+              <input type="file" class="custom-file-input">
+              <span class="custom-file-control"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="timelineText">Caption:</label>
+        <input class="form-control" type="text" id="mediaCaption" name="mediaCaption">
+      </div>
+      <div class="form-group row">
+        <label for="timelineText">Credit:</label>
+        <input class="form-control" type="text" id="mediaCredit" name="mediaCredit">
+      </div>
+      <div class="form-group row">
+        <label for="timelineText">Alt Tag:</label>
+        <input class="form-control" type="text" id="mediaAlt" name="mediaAlt">
+      </div>
+      <div class="form-group row">
+        <label for="timelineText">Title:</label>
+        <input class="form-control" type="text" id="mediaTitle" name="mediaTitle">
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="saveEvent" onclick="addJson()">Add/Save Event</button>
+  </div>
+
+  <script type="text/javascript">
+    var jsonEvent = new Array();
+    var titleJson;
+    var titleAdded = false;
+    function addJson() {
+      if (titleAdded && document.getElementById('titleCheck').checked) {
+        alert("Title has already been added!");
+        document.getElementById("timelineForm").reset();
+        return;
+      }
+      if (document.getElementById('titleCheck').checked && !titleAdded) {
+        titleJson = {
+          "media": {
+            "url": document.getElementsByName('mediaOnline')[0].value,
+            "caption": document.getElementsByName('mediaCaption')[0].value,
+            "credit": document.getElementsByName('mediaCredit')[0].value
+          },
+          "text": {
+            "headline": document.getElementsByName('headline')[0].value,
+            "text": document.getElementsByName('timelineText')[0].value
+          }
+        }
+
+        var title = JSON.stringify(titleJson);
+        document.getElementById('timelineTitle').value = title;
+        alert("Timeline Title added!");
+        var hiddenTitle = document.getElementById('timelineTitle').value;
+        console.log(hiddenTitle);
+
+        // reset the form after submission
+        document.getElementById("timelineForm").reset();
+        titleAdded = true;
+        return;
+      } // end if
+      var startM = document.getElementsByName("startMonth")[0].value;
+      var startD = document.getElementsByName("startDay")[0].value;
+      var startY = document.getElementsByName("startYear")[0].value;
+
+      // Simple validation for starting dates
+      if (isNaN(startM) || startM < 1 || startM > 12) {
+        alert("Starting Month must be a whole number between 1 and 12.");
+        return;
+      }
+
+      if (isNaN(startD) || startD < 1 || startD > 31) {
+        alert("Starting Day must be a whole number between 1 and 31.");
+        return;
+      }
+
+      if (isNaN(startY) || startY < 0 || startY > 3000) {
+        alert("Starting Year must be a whole number between 0 and 3000.");
+        return;
+      }
+
+      var endM = document.getElementsByName("endMonth")[0].value;
+      var endD = document.getElementsByName("endDay")[0].value;
+      var endY = document.getElementsByName("endYear")[0].value;
+
+      // Simple validation for ending dates
+      if (endM.length > 0) {
+        if (isNaN(endM) || endM < 1 || endM > 12) {
+          alert("Ending Month must be a whole number between 1 and 12.");
+          return;
+        }
+      }
+
+      if (endD.length > 0) {
+        if (isNaN(endD) || endD < 1 || endD > 31) {
+          alert("Ending Day must be a whole number between 1 and 31.");
+          return;
+        }
+      }
+
+      if (endY.length > 0) {
+        if (isNaN(endY) || endY < 0 || endY > 3000) {
+          alert("Ending Year must be a whole number between 0 and 3000.");
+          return;
+        }
+      }
+
+      var event;
+
+      // Year is Required for end date
+      if (endY.length > 0) {
+        // Check if End Date has a Month and Day
+        if (endM.length > 0 && endD.length > 0) {
+          event = {
+            "media": {
+              "url": document.getElementsByName('mediaOnline')[0].value,
+              "caption": document.getElementsByName('mediaCaption')[0].value,
+              "credit": document.getElementsByName('mediaCredit')[0].value
+            },
+            "start_date": {
+              "month": startM,
+              "day": startD,
+              "year": startY
+            },
+            "end_date": {
+              "month": endM,
+              "day": endD,
+              "year": endY
+            },
+            "text": {
+              "headline": document.getElementsByName("headline")[0].value,
+              "text": document.getElementsByName("timelineText")[0].value
+            }
+          } // end event
+        }
+
+        // Check if there is a Month but not a Day
+        else if (endM.length > 0 && endD.length == 0) {
+          event = {
+            "media": {
+              "url": document.getElementsByName('mediaOnline')[0].value,
+              "caption": document.getElementsByName('mediaCaption')[0].value,
+              "credit": document.getElementsByName('mediaCredit')[0].value
+            },
+            "start_date": {
+              "month": startM,
+              "day": startD,
+              "year": startY
+            },
+            "end_date": {
+              "month": endM,
+              "year": endY
+            },
+            "text": {
+              "headline": document.getElementsByName("headline")[0].value,
+              "text": document.getElementsByName("timelineText")[0].value
+            }
+          } // end event
+        } // end else if
+
+        // Otherwise there is just a Year
+        else {
+          event = {
+            "media": {
+              "url": document.getElementsByName('mediaOnline')[0].value,
+              "caption": document.getElementsByName('mediaCaption')[0].value,
+              "credit": document.getElementsByName('mediaCredit')[0].value
+            },
+            "start_date": {
+              "month": startM,
+              "day": startD,
+              "year": startY
+            },
+            "end_date": {
+              "year": endY
+            },
+            "text": {
+              "headline": document.getElementsByName("headline")[0].value,
+              "text": document.getElementsByName("timelineText")[0].value
+            }
+          } // end event
+        }
+
+      } // End end Date
+
+      else { // Otherwise there is no End Date
+        event = {
+          "media": {
+            "url": document.getElementsByName('mediaOnline')[0].value,
+            "caption": document.getElementsByName('mediaCaption')[0].value,
+            "credit": document.getElementsByName('mediaCredit')[0].value
+          },
+          "start_date": {
+            "month": startM,
+            "day": startD,
+            "year": startY
+          },
+          "text": {
+            "headline": document.getElementsByName("headline")[0].value,
+            "text": document.getElementsByName("timelineText")[0].value
+          }
+        } // end event
+      } // end Else
+
+      jsonEvent.push(event);
+
+      // Add a new row to the events table to show the new event
+      var eventsTable = document.getElementById("eventList");
+      var newRow = document.createElement("tr");
+
+      var sDate = document.createElement("td");
+      sDate.innerText = startY + "/" + startM + "/" + startD;
+
+      var eDate = document.createElement("td");
+      eDate.innerText = endY + "/" + endM + "/" + endD;
+
+      var theText = document.createElement("td");
+      theText.innerText = event.text.text;
+
+      var newEditButton = document.createElement("button");
+      newEditButton.setAttribute("type", "button");
+      newEditButton.setAttribute("class", "btn btn-primary");
+      newEditButton.innerText = "Edit";
+
+      var newEditCell = document.createElement("td");
+      newEditCell.appendChild(newEditButton);
+
+      var newDelButton = document.createElement("button");
+      newDelButton.setAttribute("type", "button");
+      newDelButton.setAttribute("class", "btn btn-danger");
+      newDelButton.innerText = "Delete";
+
+      var newDelCell = document.createElement("td");
+      newDelCell.appendChild(newDelButton);
+
+      newRow.appendChild(sDate);
+      newRow.appendChild(eDate);
+      newRow.appendChild(theText);
+      newRow.appendChild(newEditCell);
+      newRow.appendChild(newDelCell);
+
+      var tableBody = eventsTable.getElementsByTagName("tbody")[0];
+      tableBody.appendChild(newRow);
+
+      // Change JSON event to String using JSON stringfy
+      // Change value of hidden field to JSON string
+      // Read hidden value in post request and change back to JSON
+      var string = JSON.stringify(jsonEvent);
+      document.getElementById('jsonTimeline').value = string;
+      alert("Timeline Event added!");
+      var hidden = document.getElementById('jsonTimeline').value;
+
+
+
+      // reset the form after submission
+      document.getElementById("timelineForm").reset();
+    } // end addJson
+  </script>
+
+  <br> {{!-- Button trigger modal --}}
+  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#cancelTimeline">
+    Cancel
+  </button>
+  {{!-- Modal with verifying that the user wishes to leave the timeline creation page --}}
+  <div class="modal fade" id="cancelTimeline" tabindex="-1" role="dialog" aria-labelledby="cancelTimelineLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cancelTimelineLabel">
+            <b>Cancel Timeline</b>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Events will not be saved if you cancel. Are you sure?
+        </div>
+        <div class="modal-footer">
+          {{! Keep and Delete buttons}}
+          <a class="btn btn-default" href="/training/EditTraining/{{trainingId}}">Cancel/Leave</a>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Continue Working on Timeline</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Save changes</button>
+
+</form>

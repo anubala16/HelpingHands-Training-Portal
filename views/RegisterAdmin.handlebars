@@ -1,0 +1,49 @@
+{{! Admins can register other admins}} {{#if errors}} {{#each errors}}
+<div class="alert alert-danger">{{msg}}</div>
+{{/each}} {{/if}}
+<form method="post" action="/users/NewAdmin">
+    <table>
+        {{! basic information is included for the registration - nothing else}}
+        <tr>
+            <th>First Name: </th>
+            <th>
+                <input type="text" class="form-control" placeholder="First Name" name="firstName">
+            </th>
+        </tr>
+        <tr>
+            <th>Last Name: </th>
+            <th>
+                <input type="text" class="form-control" placeholder="Last Name" name="lastName">
+            </th>
+        </tr>
+        <tr>
+            <th>Email: </th>
+            <th>
+                <input type="email" class="form-control" placeholder="Email" name="email">
+            </th>
+        </tr>
+        <tr>
+            <th>Username: </th>
+            <th>
+                <input type="text" class="form-control" placeholder="Username" name="userName">
+            </th>
+        </tr>
+        <tr>
+            <th>Account Password: </th>
+            <th>
+                <input type="password" class="form-control" placeholder="Password" name="password">
+            </th>
+        </tr>
+        <tr>
+            <th>Confirm Password: </th>
+            <th>
+                <input type="password" class="form-control" placeholder="Password" name="password2">
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </th>
+        </tr>
+    </table>
+</form>

@@ -1,0 +1,35 @@
+<p>We found {{users.length}} user(s).</p>
+<p>
+    <b>**Note: For
+        <b> User Type</b>,
+        <b>1 </b> =
+        <b>Family </b>User,
+        <b>2 </b> =
+        <b>Employee</b>,
+        <b>3 </b> =
+        <b>Employer</b>, and
+        <b>4 </b> =
+        <b>Admin**</b>
+    </b>
+</p>
+<table class="table table-bordered" id="userList">
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>County</th>
+        <th>User Type</th>
+    </tr>
+    {{#each users}}
+    <tr>
+        <td>{{this.firstName}}</td>
+        <td>{{this.lastName}}</td>
+        <th>{{this.userName}}</th>
+        <td>{{this.email}}</td>
+        <td>{{this.county}}</td>
+        <td>{{this.userLevel}}</td>
+    </tr>
+    {{/each}}
+</table>
+<a class="btn btn-default" href="/users/ManageUsers">Back</a>

@@ -1,0 +1,267 @@
+{{! error messages displayed based on form validation}} {{#if errors}} {{#each errors}}
+<div class="alert alert-danger">{{msg}}</div>
+{{/each}} {{/if}} {{#if user}}
+<form method="post" action="/users/NewUser">
+  {{else}}
+  <form method="post" action="/users/NewUser">
+    {{/if}} {{! the required fields}}
+    <table>
+      <tr>
+        <th>First Name:
+          <font color="red" size="4">**</font>
+        </th>
+        <th>
+          <input type="text" class="form-control" {{#if user}} value="{{user.firstName}}" {{else}} placeholder="First Name" {{/if}}
+            name="firstName">
+        </th>
+      </tr>
+      <tr>
+        <th>Last Name:
+          <font color="red" size="4">**</font>
+        </th>
+        <th>
+          <input type="text" class="form-control" {{#if user}} value="{{user.lastName}}" {{else}} placeholder="Last Name" {{/if}} name="lastName">
+        </th>
+      </tr>
+      <tr>
+        <th>Email:
+          <font color="red" size="4">**</font>
+        </th>
+        <th>
+          <input type="email" class="form-control" {{#if user}} value="{{user.email}}" {{else}} placeholder="Email" {{/if}} name="email">
+        </th>
+      </tr>
+      <tr>
+        <th>Username:
+          <font color="red" size="4">**</font>
+        </th>
+        <th>
+          <input type="text" class="form-control" {{#if user}} readonly="readonly" value="{{user.userName}}" {{else}} placeholder="Username"
+            {{/if}} name="userName">
+        </th>
+      </tr>
+      <tr>
+        <th>Account Password:
+          <font color="red" size="4">**</font>
+        </th>
+        <th>
+          <input type="password" class="form-control" placeholder="Password" name="password">
+        </th>
+      </tr>
+      <tr>
+        <th>Confirm Password:
+          <font color="red" size="4">**</font>
+        </th>
+        <th>
+          <input type="password" class="form-control" placeholder="Password" name="password2">
+        </th>
+      </tr>
+      <tr>
+        <th>User Type:
+          <font color="red" size="4">**</font>
+        </th>
+        <th>
+          <select name="userType">
+            <option></option>
+            <option value="Employee">I'm an employee and would like to add my company information</option>
+            <option value="Employer">I'm an employer and would like to add my company information</option>
+            <option value="OtherUser">I'm a family member and an active citizen of my community</option>
+            {{#ifEQ user.userLevel 4}}
+            <option value="Admin" selected>I'm still an Administrator.</option>
+            {{/ifEQ}}
+          </select>
+        </th>
+      </tr>
+      <tr>
+        <th>County:
+          <font color="red" size="4">**</font>
+        </th>
+        <th>
+          <select name="county">
+            <option></option>
+            <option value="Alamance">Alamance</option>
+            <option value="Alexander">Alexander</option>
+            <option value="Alleghany">Alleghany</option>
+            <option value="Anson">Anson</option>
+            <option value="Ashe">Ashe</option>
+            <option value="Avery">Avery</option>
+            <option value="Beaufort">Beaufort</option>
+            <option value="Bertie">Bertie</option>
+            <option value="Bladen">Bladen</option>
+            <option value="Brunswick">Brunswick</option>
+            <option value="Buncombe">Buncombe</option>
+            <option value="Burke">Burke</option>
+            <option value="Cabarrus">Cabarrus</option>
+            <option value="Caldwell">Caldwell</option>
+            <option value="Camden">Camden</option>
+            <option value="Carteret">Carteret</option>
+            <option value="Caswell">Caswell</option>
+            <option value="Catawba">Catawba</option>
+            <option value="Chatham">Chatham</option>
+            <option value="Cherokee">Cherokee</option>
+            <option value="Chowan">Chowan</option>
+            <option value="Clay">Clay</option>
+            <option value="Cleveland">Cleveland</option>
+            <option value="Columbus">Columbus</option>
+            <option value="Craven">Craven</option>
+            <option value="Cumberland">Cumberland</option>
+            <option value="Currituck">Currituck</option>
+            <option value="Dare">Dare</option>
+            <option value="Davidson">Davidson</option>
+            <option value="Davie">Davie</option>
+            <option value="Duplin">Duplin</option>
+            <option value="Durham">Durham</option>
+            <option value="Edgecombe">Edgecombe</option>
+            <option value="Forsyth">Forsyth</option>
+            <option value="Franklin">Franklin</option>
+            <option value="Gaston">Gaston</option>
+            <option value="Gates">Gates</option>
+            <option value="Graham">Graham</option>
+            <option value="Granville">Granville</option>
+            <option value="Greene">Greene</option>
+            <option value="Guilford">Guilford</option>
+            <option value="Halifax">Halifax</option>
+            <option value="Harnett">Harnett</option>
+            <option value="Haywood">Haywood</option>
+            <option value="Henderson">Henderson</option>
+            <option value="Hertford">Hertford</option>
+            <option value="Hoke">Hoke</option>
+            <option value="Hyde">Hyde</option>
+            <option value="Iredell">Iredell</option>
+            <option value="Jackson">Jackson</option>
+            <option value="Johnston">Johnston</option>
+            <option value="Jones">Jones</option>
+            <option value="Lee">Lee</option>
+            <option value="Lenoir">Lenoir</option>
+            <option value="Lincoln">Lincoln</option>
+            <option value="Macon">Macon</option>
+            <option value="Madison">Madison</option>
+            <option value="Martin">Martin</option>
+            <option value="McDowell">McDowell</option>
+            <option value="Mecklenburg">Mecklenburg</option>
+            <option value="Mitchell">Mitchell</option>
+            <option value="Montgomery">Montgomery</option>
+            <option value="Moore">Moore</option>
+            <option value="Nash">Nash</option>
+            <option value="New Hanover">New Hanover</option>
+            <option value="Northhampton">Northhampton</option>
+            <option value="Onslow">Onslow</option>
+            <option value="Orange">Orange</option>
+            <option value="Pamlico">Pamlico</option>
+            <option value="Pasquotank">Pasquotank</option>
+            <option value="Pender">Pender</option>
+            <option value="Perquimans">Perquimans</option>
+            <option value="Person">Person</option>
+            <option value="Pitt">Pitt</option>
+            <option value="Polk">Polk</option>
+            <option value="Randolph">Randolph</option>
+            <option value="Richmond">Richmond</option>
+            <option value="Robeson">Robeson</option>
+            <option value="Rockingham">Rockingham</option>
+            <option value="Rowan">Rowan</option>
+            <option value="Rutherford">Rutherford</option>
+            <option value="Sampson">Sampson</option>
+            <option value="Scotland">Scotland</option>
+            <option value="Stanly">Stanly</option>
+            <option value="Stokes">Stokes</option>
+            <option value="Surry">Surry</option>
+            <option value="Swain">Swain</option>
+            <option value="Transylvania">Transylvania</option>
+            <option value="Tyrrell">Tyrrell</option>
+            <option value="Union">Union</option>
+            <option value="Vance">Vance</option>
+            <option value="Wake">Wake</option>
+            <option value="Warren">Warren</option>
+            <option value="Washington">Washington</option>
+            <option value="Watauga">Watauga</option>
+            <option value="Wayne">Wayne</option>
+            <option value="Wilkes">Wilkes</option>
+            <option value="Wilson">Wilson</option>
+            <option value="Yadkin">Yadkin</option>
+            <option value="Yancey">Yancey</option>
+            {{#if user.county}}
+            <option value="{{user.county}}" selected>{{user.county}}</option>
+            {{/if}}
+          </select>
+        </th>
+      </tr>
+    </table>
+    {{#if user}}
+    <input type="hidden" name="action" value="Update My Account" readonly> {{else}}
+    <input type="hidden" name="action" value="Create My Account" readonly> {{/if}}
+    <tr>
+      <th>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </th>
+    </tr>
+    </table>
+
+    <table>
+      {{! the required place of employment field if employee/employer}}
+      <tr>
+        <th>
+          <hr>
+          <b>Employment Information</b>
+        </th>
+      </tr>
+      <tr>
+        <th>Place of Employement:
+          <font color="red" size="4">*</font>
+        </th>
+        <th>
+          <input type="text" name="employmentCompany" {{#if user}} value="{{user.company}}" {{/if}}>
+        </th>
+      </tr>
+      {{! the optional supervisor's user field if employee/employer}}
+      <tr>
+        <th>Supervisor's Username:</th>
+        <th>
+          <input type="text" name="supervisor" {{#if user}} value="{{user.supervisor}}" {{/if}}>
+        </th>
+      </tr>
+    </table>
+    <hr> {{! all additional optional fields}}
+    <p>The following demographic information is optional:
+      <br>
+    </p>
+    <table>
+      <tr>
+        <th>Phone Number:
+          <br>(###)-###-#### format</th>
+        <th>
+          <input type="text" name="phone" {{#if user}} value="{{user.phone}}" {{/if}}>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <hr>
+          <b>Address</b>
+        </th>
+      </tr>
+      <tr>
+        <th>Street Address:</th>
+        <th>
+          <input type="text" name="streetAddress" {{#if user}} value="{{user.streetAddr}}" {{/if}}>
+        </th>
+      </tr>
+      <tr>
+        <th>Zipcode:</th>
+        <th>
+          <input type="text" name="zipCode" {{#if user}} value="{{user.zipcode}}" {{/if}}>
+        </th>
+      </tr>
+      <tr>
+        <th>City:</th>
+        <th>
+          <input type="text" name="city" {{#if user}} value="{{user.city}}" {{/if}}>
+        </th>
+      </tr>
+      <tr>
+        <th>State:</th>
+        <th>
+          <input type="text" name="state" {{#if user}} value="{{user.state}}" {{/if}}>
+        </th>
+      </tr>
+
+    </table>
+  </form>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type='text/css'>
+  <link rel="stylesheet" href="/css/style.css" type='text/css'>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <srcipt src="/js/UserLevelLogic.js"></srcipt>
+</head>
+
+<body>
+  {{! Navbar }}
+  <div id="fixedheader">
+    <img src="/images/Logo2.png" alt="Our Logo" width="60" height="60">
+    <a href="/LandingHome">Home</a>
+    {{#ifEQ user.userLevel 4}} {{! Link options for logged in users only}}
+    <a href="/training/ManageTrainings">Manage Trainings</a>
+    {{/ifEQ}} {{#if user}}
+    <a href="/training/TrainingHome">My Trainings</a>
+    <a href="/users/logout">Logout</a>
+    {{else}} {{! Link options for logged out users only}}
+    <a href="/users/LoginPage">Login</a>
+    <a href="/users/NewUser">Register</a>
+    {{/if}}
+    <a href="https://nccollaborative.org/contact/" target="_blank">Contact Us</a>
+  </div>
+
+  <h1 class="pageheader">{{pageTitle}}</h1>
+
+  {{! Success/Error/Failure Messages}}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        {{#if success_msg}}
+        <div class="alert alert-success">{{success_msg}}</div>
+        <br> {{/if}} {{#if error_msg}}
+        <div class="alert alert-danger">{{error_msg}}</div>
+        <br> {{/if}} {{#if error}}
+        <div class="alert alert-danger">{{error}}</div>
+        <br> {{/if}}
+      </div>
+    </div>
+    {{{body}}} {{! Added space to account for the footer on the bottom of the page. }}
+    <br>
+    <br>
+    <br>
+    <br>
+  </div>
+
+  {{! footer with link to Collab's website}}
+  <div id="fixedfooter">
+    Visit us at:
+    <a href="https://nccollaborative.org/"> NC Collaborative Site</a>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,157 @@
+{{! Logic for hiding/showing content fields for different page types }}
+<script src="/js/EditTrainingLogic.js"></script> {{! Form depending on whether the page exists yet or not - edit not yet implemented}} {{#if edit}}
+<p>You only need to select "Save Changes" if you have changed either of these two fields, otherwise select "Cancel". Questions
+  are added to the Quiz as you create them.</p>
+<form method="post" action="/training/UpdateQuizPage"></form>
+{{else}}
+<p>Create the Quiz, then you can add questions to it.</p>
+<form method="post" action="/training/AddQuizPage"></form>
+{{/if}}
+<form method="post" action="/training/AddQuizPage">
+  {{! hidden fields for the sake of the post method}}
+  <input type="hidden" value={{trainingId}} name="trainingId">
+  <input type="hidden" value={{pageId}} name="pageId"> {{! fields for the Quiz page - neither need to be filled to actually create the Quiz}}
+  <div class="form-group row" style="padding: 15px;">
+    <label for="pageDesc">Page Description:</label>
+    <input class="form-control" type="text" name="pageDesc" value="{{page.pageDesc}}">
+  </div>
+  <div class="form-group row" style="padding: 15px;">
+    <label for="passPercent">Percent Needed to Pass:</label>
+    <input class="form-control" type="number" name="passPercent" value={{quizPage.percentToPass}}>
+  </div>
+  <br> {{! Save and cancel buttons for the quiz page}}
+  <a class="btn btn-default" href="/training/EditTraining/{{trainingId}}">Cancel</a>
+  <button {{#if edit}} class="btn btn-primary disabled" {{else}} class="btn btn-primary" {{/if}} type="submit" id="question">Save Changes</button>
+</form>
+<hr> {{! Adding questions of different types to the quiz}}
+<form method="post" action="/training/AddQuizQuestion">
+  {{#if edit}}
+  <input type="hidden" value={{trainingId}} name="trainingId2">
+  <input type="hidden" value={{pageId}} name="pageId2">
+  <input type="hidden" value={{quizPage.id}} name="quizId">
+  <i>Add new question of type: </i>
+  <input id="pageType" name="pageName" type="hidden" value="quiz">
+  <select class="custom-select" id="questionType" name="questionType">
+    <option value="multChoice">Multiple Choice</option>
+    <option value="trueFalse">True/False</option>
+    <option value="rating">Rating Scale (Survey)</option>
+  </select>
+  {{!-- Button trigger modal --}}
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addQuestion">
+    Add Question to Quiz
+  </button>
+  {{/if}} {{!-- Modal with fields for the question of the selected type --}}
+  <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="addQuestionLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addQuestionLabel">Add/Save Question</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          {{!-- If a Multiple Choice Question is Chosen --}}
+          <div id="multChoice" class="question">
+            <div class="form-group row">
+              <label for="multQuestion">Question:</label>
+              <input class="form-control" type="text" name="multQuestion">
+            </div>
+            <div class="form-group row">
+              <label for="op1">Option 1:</label>
+              <input class="form-control" type="text" name="op1">
+            </div>
+            <div class="form-group row">
+              <label for="op2">Option 2:</label>
+              <input class="form-control" type="text" name="op2">
+            </div>
+            <div class="form-group row">
+              <label for="op3">Option 3:</label>
+              <input class="form-control" type="text" name="op3">
+            </div>
+            <div class="form-group row">
+              <label for="op4">Option 4:</label>
+              <input class="form-control" type="text" name="op4">
+            </div>
+            <label for="multAnswer">Select the correct Answer:</label>
+            <select class="custom-select" name="multAnswer">
+              <option value="A">Option 1</option>
+              <option value="B">Option 2</option>
+              <option value="C">Option 3</option>
+              <option value="D">Option 4</option>
+            </select>
+          </div>
+          {{!-- If a True/False Question is Chosen --}}
+          <div id="trueFalse" class="question">
+            <div class="form-group row">
+              <label for="tfQuestion">Question:</label>
+              <input class="form-control" type="text" name="tfQuestion">
+            </div>
+            <label>Select the correct Answer:</label>
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio" name="tfRadio" value="A"> True
+            </label>
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio" name="tfRadio" value="B"> False
+            </label>
+          </div>
+          {{!-- If a Rating Scale is Chosen --}}
+          <div id="rating" class="question">
+            <p>These questions will give the user a scale of 1 to 5 with Strongly Agree on one end and Strongly Disagree on
+              the other.</p>
+            <br>
+            <div class="form-group row">
+              <label for="ratingQuestion">Question:</label>
+              <input class="form-control" type="text" name="ratingQuestion">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          {{! Save and Cancel buttons for the question being added}}
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button class="btn btn-primary" type="submit" name="quizQuestion">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{{#if edit}}
+<hr> {{! table of all the questions added to the quiz}}
+<table class="table table-bordered" id="questionList">
+  <tr>
+    <th>Question Type</th>
+    <th>Question Text</th>
+    <th></th>
+  </tr>
+  {{#each questions}}
+  <tr>
+    <td>{{this.questionType}}</td>
+    <td>{{this.questionText}}</td>
+    <th>
+      <button class="btn btn-danger" onclick="deleteQuestion({{this.id}})">Delete</button>
+    </th>
+  </tr>
+  {{/each}} {{/if}}
+</table>
+
+<script type="text/javascript">
+
+  function deleteQuestion(questionId) {
+
+    var deleteForm = document.createElement("form");
+    deleteForm.setAttribute("method", "post");
+    deleteForm.setAttribute("action", "/training/DeleteQuestion");
+
+    var qIdField = document.createElement("input");
+    qIdField.setAttribute("type", "hidden");
+    qIdField.setAttribute("name", "questionId");
+    qIdField.setAttribute("value", questionId);
+    deleteForm.appendChild(qIdField);
+
+    document.body.appendChild(deleteForm);
+    deleteForm.submit();
+
+    return;
+  }
+
+</script>
