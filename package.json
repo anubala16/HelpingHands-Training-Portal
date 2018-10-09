@@ -35,7 +35,7 @@
   "dependencies": {
     "bcryptjs": "*",
     "body-parser": "*",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^4.1.2",
     "connect-flash": "*",
     "cookie-parser": "^1.4.1",
     "debug": "^2.2.0",
