@@ -1,4 +1,4 @@
-# 2017FallTeam06
+# Helping Hands Training Portal for the NC Collaborative
 
 To set up the program (using MongoDB): 
 
